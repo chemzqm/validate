@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/chemzqm/validate.png)](http://travis-ci.org/chemzqm/validate)
 
-Validate input elements in an easy way
+Validate input elements in an easy way [demo](chemzqm.github.io/validate/)
 
 * *Design friendly* write html by yourself, no generate html, className change only
 * *locale friendly* write error messages in javascript

@@ -9,4 +9,7 @@ dev:
 test:
 	@./node_modules/.bin/karma start
 
+doc:
+	@ghp-import example -n -p
+
 .PHONY: test example
