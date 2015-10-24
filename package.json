@@ -1,0 +1,47 @@
+{
+  "name": "validate-component",
+  "version": "0.0.1",
+  "description": "validate input elements in an easy way",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chemzqm/validate.git"
+  },
+  "keywords": [
+    "validate"
+  ],
+  "author": "chemzqm@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chemzqm/validate/issues"
+  },
+  "homepage": "https://github.com/chemzqm/validate#readme",
+  "devDependencies": {
+    "coveralls": "^2.11.4",
+    "karma": "^0.13.14",
+    "karma-cli": "^0.1.1",
+    "karma-coverage": "^0.5.3",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.3.3",
+    "mocha-loader": "^0.7.1",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "browser": {
+    "classes": "component-classes",
+    "emitter": "component-emitter",
+    "query": "component-query",
+    "invalid": "invalid-component"
+  },
+  "dependencies": {
+    "component-classes": "^1.2.4",
+    "component-emitter": "^1.2.0",
+    "component-query": "0.0.3",
+    "invalid-component": "0.0.1"
+  }
+}
