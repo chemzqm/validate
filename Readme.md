@@ -7,6 +7,7 @@ Validate input elements in an easy way [demo](http://chemzqm.github.io/validate/
 * **Design friendly** write html by yourself, no generate html, className change only
 * **locale friendly** write error messages in javascript
 * **Smart** promise awareness, [invlid](https://github.com/chemzqm/invalid) fileds ignored on `isValid()` call
+* **Cache** no validation fired when not changed
 * **No harm** no magic, easy to understand
 
 TODO: test
