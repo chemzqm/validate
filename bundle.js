@@ -130,8 +130,9 @@
 	 * `search` Required function for find error element
 	 * `errorClass` ['error'] className add to error element onerror, input element would be add `input-[errorClass]`
 	 * `successClass` ['success'] className add to error element onsuccess, input element would be add `input-[successClass]`
-	 * `successMsg` [''] Optional success message string add to error element, if it's a function, should return message according to input name
+	 * `successMsg` ['✔']  success message string add to error element, if it's a function, should return message according to input name
 	 * `processMsg` process message for promise
+	 * `exclude` optional regex for filter field by name
 	 *
 	 * @param {Element} form
 	 * @param {Object} opt options for validate
@@ -139,11 +140,17 @@
 	 */
 	function Validate(form, opt) {
 	  if (!(this instanceof Validate)) return new Validate(form, opt)
+	  opt = opt || {}
 	  this.el = form
 	  this.values_map = {}
 	  this.opt = assign({}, defaultOpt)
 	  assign(this.opt, opt)
 	  var inputs = this.inputs = filterInput(query.all('input', form))
+	  if (opt.exclude) {
+	    inputs.filter(function (input) {
+	      return !opt.exclude.test(input.name)
+	    })
+	  }
 	  var self = this
 	  inputs.forEach(function (input) {
 	    input.onblur = function () {
@@ -167,6 +174,7 @@
 	  var promise
 	  var results = this.emit('blur', name, val, required, el)
 	  var arr = this.emit('blur ' + name, val, el)
+	  if (!required && val === '') return this.clean(el)
 	  results = results.concat(arr).filter(function (str) {
 	    if (str.then) {
 	      promise = str
@@ -194,15 +202,25 @@
 	  classes(errEl).remove(opt.errorClass)
 	  classes(el).remove('input-' + opt.errorClass)
 	  if (opt.successClass) {
-	    classes(errEl).add(opt.successClass)
 	    classes(el).add('input-' + opt.successClass)
+	    classes(errEl).add(opt.successClass)
 	    errEl.innerHTML = opt.successMsg || ''
 	  }
 	}
 	
+	Validate.prototype.clean = function (el) {
+	  var opt = this.opt
+	  var errEl = this.opt.search(el)
+	  classes(el).remove('input-' + opt.successClass)
+	  classes(el).remove('input-' + opt.errorClass)
+	  classes(errEl).remove(opt.successClass)
+	  classes(errEl).remove(opt.errorClass)
+	  errEl.innerHTML = ''
+	}
 	/**
 	 * Check if all fields are valid
 	 *
+	 * @return {Boolean} valid
 	 * @api public
 	 */
 	Validate.prototype.isValid = function () {
@@ -213,12 +231,17 @@
 	  this.inputs.forEach(function (input) {
 	    if (invalid(input, form)) return
 	    input.onblur()
-	    errEls.push(search(input))
+	    var errEl = search(input)
+	    errEls.push(errEl)
+	    errEl.__target = input
 	  })
 	  var valid = true
 	  // errors might be hidden with invalid inputs
 	  errEls.forEach(function (el) {
-	    if (classes(el).has(errorClass)) valid = false
+	    if (classes(el).has(errorClass)) {
+	      if (valid) el.__target.focus()
+	      valid = false
+	    }
 	  })
 	  return valid
 	}
