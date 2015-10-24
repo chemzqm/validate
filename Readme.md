@@ -2,12 +2,14 @@
 
 [![Build Status](https://secure.travis-ci.org/chemzqm/validate.png)](http://travis-ci.org/chemzqm/validate)
 
-Validate input elements in an easy way [demo](chemzqm.github.io/validate/)
+Validate input elements in an easy way [demo](http://chemzqm.github.io/validate/)
 
-* *Design friendly* write html by yourself, no generate html, className change only
-* *locale friendly* write error messages in javascript
-* *Smart* promise awareness, [invlid](https://github.com/chemzqm/invalid) fileds ignored on `isValid()` call
-* *No harm* no magic, easy to understand
+* **Design friendly** write html by yourself, no generate html, className change only
+* **locale friendly** write error messages in javascript
+* **Smart** promise awareness, [invlid](https://github.com/chemzqm/invalid) fileds ignored on `isValid()` call
+* **No harm** no magic, easy to understand
+
+TODO: test
 
 ## Install
 
@@ -15,15 +17,13 @@ Validate input elements in an easy way [demo](chemzqm.github.io/validate/)
 
 ## Usage
 
-```
+``` js
 var Validate = require('validate-component')
 
 var validater = Validate(form, {
   search: function (el) {
     return el.parentNode.firstElementChild.lastElementChild
   }
-  //errorClass: 'error',
-  //successClass: 'success'
 })
 
 validater.on('blur', function (name, val, required, el) {
