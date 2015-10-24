@@ -31,12 +31,12 @@ validater.on('blur', function (name, val, required, el) {
   if (required && !val) return 'Please enter your ' + name
 })
 
-validater.on('name blur', function (val) {
+validater.on('blur name', function (val) {
   if (!/^[\w_]+$/.test(val)) return 'Should only contain letters, numbers and _'
   if (val.length < 6) return 'At least have 6 characters'
 })
 
-validater.on('email blur', function (val) {
+validater.on('blur email', function (val) {
   if (!/.+\@.+\..+/.test(val)) return 'Please enter valid email address'
 })
 
@@ -66,6 +66,6 @@ Trigger all the blur events for valid fields, return true if all pass (promise r
 
 ## Events
 
-`blur` emit with `name` `value` `required` and element, when return string, showed as error message
-`blur [name]` emit with `value` and `element`, when return string, showed as error message
+* `blur` emit with `name` `value` `required` and element, when return string, showed as error message
+* `blur [name]` emit with `value` and `element`, when return string, showed as error message
 
