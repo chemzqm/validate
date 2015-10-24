@@ -29,6 +29,7 @@ var defaultOpt = {
 function Validate(form, opt) {
   if (!(this instanceof Validate)) return new Validate(form, opt)
   this.el = form
+  this.values_map = {}
   this.opt = assign({}, defaultOpt)
   assign(this.opt, opt)
   var inputs = this.inputs = filterInput(query.all('input', form))
@@ -45,9 +46,12 @@ Emitter(Validate.prototype)
 Validate.prototype.onblur = function (el) {
   var val = el.value
   var opt = this.opt
+  var name = el.name
+  // Not change do nothing
+  if (this.values_map[name] === val) return
+  this.values_map[name] = val
   var errEl = this.opt.search(el)
   if (!errEl) throw new Error('can\'t find error element')
-  var name = el.name
   var required = el.required
   var promise
   var results = this.emit('blur', name, val, required, el)
@@ -67,6 +71,7 @@ Validate.prototype.onblur = function (el) {
     if (str) return self.showErrmsg(str, el)
     self.onsuccess(el)
   }, function (e) {
+    classes(errEl).remove(opt.successClass)
     classes(errEl).add(opt.errorClass)
     errEl.innerHTML = e.message
   })
@@ -165,6 +170,12 @@ function assign(o, obj) {
   return o
 }
 
+/**
+ * No hidden inputs
+ *
+ * @param {Array} inputs
+ * @api public
+ */
 function filterInput(els) {
   var res = []
   var el

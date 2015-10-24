@@ -2,11 +2,13 @@ var form = document.forms[0]
 var Validate = require('..')
 var debounce = require('debounce')
 
-var input = document.querySelector('input')
-input.onkeyup = function () {
-  var fn = debounce(input.onblur, 300)
-  fn()
-}
+var inputs = [].slice.call(document.querySelectorAll('input'))
+inputs.forEach(function (input) {
+  input.onkeyup = function () {
+    var fn = debounce(input.onblur, 300)
+    fn()
+  }
+})
 
 var validater = Validate(form, {
   search: function (el) {
