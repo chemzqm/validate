@@ -19,8 +19,9 @@ var defaultOpt = {
  * `search` Required function for find error element
  * `errorClass` ['error'] className add to error element onerror, input element would be add `input-[errorClass]`
  * `successClass` ['success'] className add to error element onsuccess, input element would be add `input-[successClass]`
- * `successMsg` [''] Optional success message string add to error element, if it's a function, should return message according to input name
+ * `successMsg` ['✔']  success message string add to error element, if it's a function, should return message according to input name
  * `processMsg` process message for promise
+ * `exclude` optional regex for filter field by name
  *
  * @param {Element} form
  * @param {Object} opt options for validate
