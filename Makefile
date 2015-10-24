@@ -10,6 +10,7 @@ test:
 	@./node_modules/.bin/karma start
 
 doc:
+	@webpack -d example/index.js example/bundle.js
 	@ghp-import example -n -p
 
 .PHONY: test example
