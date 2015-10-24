@@ -62,14 +62,13 @@ Validate.prototype.onblur = function (el) {
   if (results.length) return this.showErrmsg(results[0], el)
   if (!promise) return this.onsuccess(el)
   var self = this
-  classes(errEl).remove(opt.errorClass).remove(opt.successClass)
-  errEl.textContent = opt.processMsg
+  errEl.innerHTML = opt.processMsg
   promise.then(function (str) {
     if (str) return self.showErrmsg(str, el)
     self.onsuccess(el)
   }, function (e) {
     classes(errEl).add(opt.errorClass)
-    errEl.textContent = e.message
+    errEl.innerHTML = e.message
   })
 }
 
@@ -81,7 +80,7 @@ Validate.prototype.onsuccess = function (el) {
   if (opt.successClass) {
     classes(errEl).add(opt.successClass)
     classes(el).add('input-' + opt.successClass)
-    errEl.textContent = opt.successMsg || ''
+    errEl.innerHTML = opt.successMsg || ''
   }
 }
 
@@ -124,7 +123,7 @@ Validate.prototype.showErrmsg = function (str, el) {
   }
   classes(el).add('input-' + opt.errorClass)
   classes(errEl).add(opt.errorClass)
-  errEl.textContent = str
+  errEl.innerHTML = str
 }
 
 // hack emit function to return result

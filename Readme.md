@@ -61,7 +61,7 @@ Create validate with form element and options (see above).
 
 ### .isValid()
 
-Trigger all the blur events for valid fields, return true if all pass (promises are ignored)
+Trigger all the blur events for valid fields, return true if all pass (promise results are ignored)
 
 ## Events
 

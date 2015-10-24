@@ -1,5 +1,12 @@
 var form = document.forms[0]
 var Validate = require('..')
+var debounce = require('debounce')
+
+var input = document.querySelector('input')
+input.onkeyup = function () {
+  var fn = debounce(input.onblur, 300)
+  fn()
+}
 
 var validater = Validate(form, {
   search: function (el) {
@@ -37,5 +44,8 @@ validater.on('blur age', function (val) {
 })
 
 form.onsubmit = function (e) {
-  if (!validater.isValid()) e.preventDefault()
+  e.preventDefault()
+  if (validater.isValid()) {
+    console.log('submit data')
+  }
 }

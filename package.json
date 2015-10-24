@@ -21,6 +21,7 @@
   "homepage": "https://github.com/chemzqm/validate#readme",
   "devDependencies": {
     "coveralls": "^2.11.4",
+    "debounce": "^1.0.0",
     "karma": "^0.13.14",
     "karma-cli": "^0.1.1",
     "karma-coverage": "^0.5.3",
