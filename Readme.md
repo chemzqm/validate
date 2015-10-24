@@ -10,8 +10,6 @@ Validate input elements in an easy way [demo](http://chemzqm.github.io/validate/
 * **Cache** no validation fired when not changed
 * **No harm** no magic, easy to understand
 
-TODO: test
-
 ## Install
 
     npm i validate-component
