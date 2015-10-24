@@ -103,11 +103,15 @@ Validate.prototype.isValid = function () {
     if (invalid(input, form)) return
     input.onblur()
     errEls.push(search(input))
+    errEls.__target = input
   })
   var valid = true
   // errors might be hidden with invalid inputs
   errEls.forEach(function (el) {
-    if (classes(el).has(errorClass)) valid = false
+    if (classes(el).has(errorClass)) {
+      if (valid) el.__target.focus()
+      valid = false
+    }
   })
   return valid
 }
