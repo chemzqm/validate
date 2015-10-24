@@ -51,11 +51,13 @@
 	var Validate = __webpack_require__(/*! .. */ 1)
 	var debounce = __webpack_require__(/*! debounce */ 8)
 	
-	var input = document.querySelector('input')
-	input.onkeyup = function () {
-	  var fn = debounce(input.onblur, 300)
-	  fn()
-	}
+	var inputs = [].slice.call(document.querySelectorAll('input'))
+	inputs.forEach(function (input) {
+	  input.onkeyup = function () {
+	    var fn = debounce(input.onblur, 300)
+	    fn()
+	  }
+	})
 	
 	var validater = Validate(form, {
 	  search: function (el) {
@@ -138,6 +140,7 @@
 	function Validate(form, opt) {
 	  if (!(this instanceof Validate)) return new Validate(form, opt)
 	  this.el = form
+	  this.values_map = {}
 	  this.opt = assign({}, defaultOpt)
 	  assign(this.opt, opt)
 	  var inputs = this.inputs = filterInput(query.all('input', form))
@@ -154,9 +157,12 @@
 	Validate.prototype.onblur = function (el) {
 	  var val = el.value
 	  var opt = this.opt
+	  var name = el.name
+	  // Not change do nothing
+	  if (this.values_map[name] === val) return
+	  this.values_map[name] = val
 	  var errEl = this.opt.search(el)
 	  if (!errEl) throw new Error('can\'t find error element')
-	  var name = el.name
 	  var required = el.required
 	  var promise
 	  var results = this.emit('blur', name, val, required, el)
@@ -176,6 +182,7 @@
 	    if (str) return self.showErrmsg(str, el)
 	    self.onsuccess(el)
 	  }, function (e) {
+	    classes(errEl).remove(opt.successClass)
 	    classes(errEl).add(opt.errorClass)
 	    errEl.innerHTML = e.message
 	  })
@@ -274,6 +281,12 @@
 	  return o
 	}
 	
+	/**
+	 * No hidden inputs
+	 *
+	 * @param {Array} inputs
+	 * @api public
+	 */
 	function filterInput(els) {
 	  var res = []
 	  var el
