@@ -197,4 +197,33 @@ describe('validate component', function () {
     assert.equal(el.className, '')
     assert.equal(el.previousElementSibling.className, '')
   })
+
+  it('should clean all fields on form reset', function () {
+    form.appendChild(document.createElement('span'))
+    var el = document.createElement('input')
+    el.type = 'text'
+    el.name = 'title'
+    el.value = 'invalid'
+    el.className = 'input-error'
+    form.appendChild(el)
+    input.className = 'input-error'
+    el.previousElementSibling.className = 'error'
+    input.previousElementSibling.className = 'error'
+    el.previousElementSibling.textContent = 'not valid'
+    var validater = Validate(form)
+    form.reset()
+    assert.equal(el.className, '')
+    assert.equal(input.className, '')
+    assert.equal(el.previousElementSibling.className, '')
+    assert.equal(input.previousElementSibling.className, '')
+    assert.equal(validater.opt.search(el).textContent, '')
+  })
+
+  it('should unbind event on unbind()', function () {
+    input.className = 'input-error'
+    var validater = Validate(form)
+    validater.unbind()
+    form.reset()
+    assert.equal(input.className, 'input-error')
+  })
 })

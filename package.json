@@ -37,11 +37,13 @@
     "classes": "component-classes",
     "emitter": "component-emitter",
     "query": "component-query",
-    "invalid": "invalid-component"
+    "invalid": "invalid-component",
+    "event": "component-event"
   },
   "dependencies": {
     "component-classes": "^1.2.4",
     "component-emitter": "^1.2.0",
+    "component-event": "^0.1.4",
     "component-query": "0.0.3",
     "invalid-component": "0.0.1"
   }

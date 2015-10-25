@@ -2,6 +2,7 @@ var classes = require('classes')
 var Emitter = require('emitter')
 var query = require('query')
 var invalid = require('invalid')
+var events = require('event')
 
 var defaultOpt = {
   search: function (el) {
@@ -27,7 +28,7 @@ var defaultOpt = {
  * @param {Object} opt options for validate
  * @api public
  */
-function Validate(form, opt) {
+function Validate (form, opt) {
   if (!(this instanceof Validate)) return new Validate(form, opt)
   opt = opt || {}
   this.el = form
@@ -46,9 +47,26 @@ function Validate(form, opt) {
       self.onblur(input)
     }
   })
+  this._reset = this.reset.bind(this)
+  events.bind(this.el, 'reset', this._reset)
 }
 
 Emitter(Validate.prototype)
+
+/**
+ * Clean all input status
+ *
+ * @api public
+ */
+Validate.prototype.reset = function () {
+  this.inputs.forEach(function (input) {
+    this.clean(input)
+  }, this)
+}
+
+Validate.prototype.unbind = function () {
+  events.unbind(this.el, 'reset', this._reset)
+}
 
 Validate.prototype.onblur = function (el) {
   var val = el.value
@@ -58,7 +76,7 @@ Validate.prototype.onblur = function (el) {
   if (this.values_map[name] === val) return
   this.values_map[name] = val
   var errEl = this.opt.search(el)
-  if (!errEl) throw new Error('can\'t find error element')
+  if (!errEl) throw new Error("can't find error element")
   var required = el.required
   var promise
   var results = this.emit('blur', name, val, required, el)
@@ -97,6 +115,12 @@ Validate.prototype.onsuccess = function (el) {
   }
 }
 
+/**
+ * clean classes and message
+ *
+ * @param {Element} el
+ * @api public
+ */
 Validate.prototype.clean = function (el) {
   var opt = this.opt
   var errEl = this.opt.search(el)
@@ -155,24 +179,24 @@ Validate.prototype.showErrmsg = function (str, el) {
 }
 
 // hack emit function to return result
-Validate.prototype.emit = function(event){
+Validate.prototype.emit = function (event) {
   var res = []
   var s
-  this._callbacks = this._callbacks || {};
+  this._callbacks = this._callbacks || {}
   var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
+  var callbacks = this._callbacks['$' + event]
 
   if (callbacks) {
-    callbacks = callbacks.slice(0);
+    callbacks = callbacks.slice(0)
     for (var i = 0, len = callbacks.length; i < len; ++i) {
-      s = callbacks[i].apply(this, args);
+      s = callbacks[i].apply(this, args)
       // only cares about none null values
       if (s != null) res.push(s)
     }
   }
 
-  return res;
-};
+  return res
+}
 
 Validate.setDefault = function (opt) {
   assign(defaultOpt, opt)
@@ -186,7 +210,7 @@ Validate.setDefault = function (opt) {
  * @return target object
  * @api public
  */
-function assign(o, obj) {
+function assign (o, obj) {
   for (var k in obj) {
     o[k] = obj[k]
   }
@@ -199,7 +223,7 @@ function assign(o, obj) {
  * @param {Array} inputs
  * @api public
  */
-function filterInput(els) {
+function filterInput (els) {
   var res = []
   var el
   for (var i = 0, len = els.length; i < len; i++) {
