@@ -49,7 +49,7 @@
 
 	var form = document.forms[0]
 	var Validate = __webpack_require__(/*! .. */ 1)
-	var debounce = __webpack_require__(/*! debounce */ 8)
+	var debounce = __webpack_require__(/*! debounce */ 9)
 	
 	var inputs = [].slice.call(document.querySelectorAll('input'))
 	inputs.forEach(function (input) {
@@ -113,9 +113,10 @@
 	var Emitter = __webpack_require__(/*! emitter */ 4)
 	var query = __webpack_require__(/*! query */ 5)
 	var invalid = __webpack_require__(/*! invalid */ 6)
+	var events = __webpack_require__(/*! event */ 8)
 	
 	var defaultOpt = {
-	  search: function (el) {
+	  search: function(el) {
 	    return el.parentNode.firstElementChild.lastElementChild
 	  },
 	  successMsg: '✔',
@@ -147,25 +148,42 @@
 	  assign(this.opt, opt)
 	  var inputs = this.inputs = filterInput(query.all('input', form))
 	  if (opt.exclude) {
-	    inputs.filter(function (input) {
+	    inputs.filter(function(input) {
 	      return !opt.exclude.test(input.name)
 	    })
 	  }
 	  var self = this
-	  inputs.forEach(function (input) {
-	    input.onblur = function () {
+	  inputs.forEach(function(input) {
+	    input.onblur = function() {
 	      self.onblur(input)
 	    }
 	  })
+	  this._reset = this.reset.bind(this)
+	  events.bind(this.el, 'reset', this._reset)
 	}
 	
 	Emitter(Validate.prototype)
 	
-	Validate.prototype.onblur = function (el) {
+	/**
+	 * Clean all input status
+	 *
+	 * @api public
+	 */
+	Validate.prototype.reset = function () {
+	  this.inputs.forEach(function (input) {
+	    this.clean(input)
+	  }, this)
+	}
+	
+	Validate.prototype.unbind = function () {
+	  events.unbind(this.el, 'reset', this._reset)
+	}
+	
+	Validate.prototype.onblur = function(el) {
 	  var val = el.value
 	  var opt = this.opt
 	  var name = el.name
-	  // Not change do nothing
+	    // Not change do nothing
 	  if (this.values_map[name] === val) return
 	  this.values_map[name] = val
 	  var errEl = this.opt.search(el)
@@ -175,7 +193,7 @@
 	  var results = this.emit('blur', name, val, required, el)
 	  var arr = this.emit('blur ' + name, val, el)
 	  if (!required && val === '') return this.clean(el)
-	  results = results.concat(arr).filter(function (str) {
+	  results = results.concat(arr).filter(function(str) {
 	    if (str.then) {
 	      promise = str
 	      return false
@@ -186,17 +204,17 @@
 	  if (!promise) return this.onsuccess(el)
 	  var self = this
 	  errEl.innerHTML = opt.processMsg
-	  promise.then(function (str) {
+	  promise.then(function(str) {
 	    if (str) return self.showErrmsg(str, el)
 	    self.onsuccess(el)
-	  }, function (e) {
+	  }, function(e) {
 	    classes(errEl).remove(opt.successClass)
 	    classes(errEl).add(opt.errorClass)
 	    errEl.innerHTML = e.message
 	  })
 	}
 	
-	Validate.prototype.onsuccess = function (el) {
+	Validate.prototype.onsuccess = function(el) {
 	  var opt = this.opt
 	  var errEl = this.opt.search(el)
 	  classes(errEl).remove(opt.errorClass)
@@ -208,27 +226,33 @@
 	  }
 	}
 	
-	Validate.prototype.clean = function (el) {
-	  var opt = this.opt
-	  var errEl = this.opt.search(el)
-	  classes(el).remove('input-' + opt.successClass)
-	  classes(el).remove('input-' + opt.errorClass)
-	  classes(errEl).remove(opt.successClass)
-	  classes(errEl).remove(opt.errorClass)
-	  errEl.innerHTML = ''
-	}
 	/**
-	 * Check if all fields are valid
+	 * clean classes and message
 	 *
-	 * @return {Boolean} valid
+	 * @param {Element} el
 	 * @api public
 	 */
-	Validate.prototype.isValid = function () {
+	Validate.prototype.clean = function(el) {
+	    var opt = this.opt
+	    var errEl = this.opt.search(el)
+	    classes(el).remove('input-' + opt.successClass)
+	    classes(el).remove('input-' + opt.errorClass)
+	    classes(errEl).remove(opt.successClass)
+	    classes(errEl).remove(opt.errorClass)
+	    errEl.innerHTML = ''
+	  }
+	  /**
+	   * Check if all fields are valid
+	   *
+	   * @return {Boolean} valid
+	   * @api public
+	   */
+	Validate.prototype.isValid = function() {
 	  var form = this.el
 	  var errEls = []
 	  var errorClass = this.opt.errorClass
 	  var search = this.opt.search
-	  this.inputs.forEach(function (input) {
+	  this.inputs.forEach(function(input) {
 	    if (invalid(input, form)) return
 	    input.onblur()
 	    var errEl = search(input)
@@ -236,8 +260,8 @@
 	    errEl.__target = input
 	  })
 	  var valid = true
-	  // errors might be hidden with invalid inputs
-	  errEls.forEach(function (el) {
+	    // errors might be hidden with invalid inputs
+	  errEls.forEach(function(el) {
 	    if (classes(el).has(errorClass)) {
 	      if (valid) el.__target.focus()
 	      valid = false
@@ -253,7 +277,7 @@
 	 * @param {Element} el error element
 	 * @api private
 	 */
-	Validate.prototype.showErrmsg = function (str, el) {
+	Validate.prototype.showErrmsg = function(str, el) {
 	  var opt = this.opt
 	  var errEl = opt.search(el)
 	  if (opt.successClass) {
@@ -266,12 +290,12 @@
 	}
 	
 	// hack emit function to return result
-	Validate.prototype.emit = function(event){
+	Validate.prototype.emit = function(event) {
 	  var res = []
 	  var s
 	  this._callbacks = this._callbacks || {};
-	  var args = [].slice.call(arguments, 1)
-	    , callbacks = this._callbacks['$' + event];
+	  var args = [].slice.call(arguments, 1),
+	    callbacks = this._callbacks['$' + event];
 	
 	  if (callbacks) {
 	    callbacks = callbacks.slice(0);
@@ -285,7 +309,7 @@
 	  return res;
 	};
 	
-	Validate.setDefault = function (opt) {
+	Validate.setDefault = function(opt) {
 	  assign(defaultOpt, opt)
 	}
 	
@@ -810,6 +834,49 @@
 
 /***/ },
 /* 8 */
+/*!************************************!*\
+  !*** ./~/component-event/index.js ***!
+  \************************************/
+/***/ function(module, exports) {
+
+	var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
+	    unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
+	    prefix = bind !== 'addEventListener' ? 'on' : '';
+	
+	/**
+	 * Bind `el` event `type` to `fn`.
+	 *
+	 * @param {Element} el
+	 * @param {String} type
+	 * @param {Function} fn
+	 * @param {Boolean} capture
+	 * @return {Function}
+	 * @api public
+	 */
+	
+	exports.bind = function(el, type, fn, capture){
+	  el[bind](prefix + type, fn, capture || false);
+	  return fn;
+	};
+	
+	/**
+	 * Unbind `el` event `type`'s callback `fn`.
+	 *
+	 * @param {Element} el
+	 * @param {String} type
+	 * @param {Function} fn
+	 * @param {Boolean} capture
+	 * @return {Function}
+	 * @api public
+	 */
+	
+	exports.unbind = function(el, type, fn, capture){
+	  el[unbind](prefix + type, fn, capture || false);
+	  return fn;
+	};
+
+/***/ },
+/* 9 */
 /*!*****************************!*\
   !*** ./~/debounce/index.js ***!
   \*****************************/
@@ -820,7 +887,7 @@
 	 * Module dependencies.
 	 */
 	
-	var now = __webpack_require__(/*! date-now */ 9);
+	var now = __webpack_require__(/*! date-now */ 10);
 	
 	/**
 	 * Returns a function, that, as long as it continues to be invoked, will not
@@ -871,7 +938,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /*!****************************************!*\
   !*** ./~/debounce/~/date-now/index.js ***!
   \****************************************/
