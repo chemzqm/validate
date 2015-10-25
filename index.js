@@ -14,6 +14,9 @@ var defaultOpt = {
   successClass: 'success'
 }
 
+// http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
+var ignored_re = /^(?:submit|button|image|reset|file|hidden)$/i
+
 /**
  * Validate
  *
@@ -228,7 +231,7 @@ function filterInput (els) {
   var el
   for (var i = 0, len = els.length; i < len; i++) {
     el = els[i]
-    if (el.type === 'hidden') continue
+    if (ignored_re.test(el.type)) continue
     res.push(el)
   }
   return res

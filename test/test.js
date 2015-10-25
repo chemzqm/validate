@@ -226,4 +226,20 @@ describe('validate component', function () {
     form.reset()
     assert.equal(input.className, 'input-error')
   })
+
+  it('should ignore unsuccessful contorls', function () {
+    function createInput(type) {
+      var node = document.createElement('input')
+      node.type = type
+      form.appendChild(node)
+    }
+    createInput('submit')
+    createInput('button')
+    createInput('image')
+    createInput('reset')
+    createInput('file')
+    createInput('hidden')
+    var validater = Validate(form)
+    assert.equal(validater.inputs.length, 1)
+  })
 })
