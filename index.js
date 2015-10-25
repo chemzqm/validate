@@ -42,7 +42,7 @@ validater.on('blur email', function (val) {
 })
 
 validater.on('blur age', function (val) {
-  if (!/\d+/.test(val)) return 'Please enter valid age'
+  if (!/^\d+$/.test(val)) return 'Please enter valid age'
 })
 
 form.onsubmit = function (e) {

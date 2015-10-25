@@ -91,7 +91,7 @@
 	})
 	
 	validater.on('blur age', function (val) {
-	  if (!/\d+/.test(val)) return 'Please enter valid age'
+	  if (!/^\d+$/.test(val)) return 'Please enter valid age'
 	})
 	
 	form.onsubmit = function (e) {
@@ -116,7 +116,7 @@
 	var events = __webpack_require__(/*! event */ 8)
 	
 	var defaultOpt = {
-	  search: function(el) {
+	  search: function (el) {
 	    return el.parentNode.firstElementChild.lastElementChild
 	  },
 	  successMsg: '✔',
@@ -139,7 +139,7 @@
 	 * @param {Object} opt options for validate
 	 * @api public
 	 */
-	function Validate(form, opt) {
+	function Validate (form, opt) {
 	  if (!(this instanceof Validate)) return new Validate(form, opt)
 	  opt = opt || {}
 	  this.el = form
@@ -148,13 +148,13 @@
 	  assign(this.opt, opt)
 	  var inputs = this.inputs = filterInput(query.all('input', form))
 	  if (opt.exclude) {
-	    inputs.filter(function(input) {
+	    inputs.filter(function (input) {
 	      return !opt.exclude.test(input.name)
 	    })
 	  }
 	  var self = this
-	  inputs.forEach(function(input) {
-	    input.onblur = function() {
+	  inputs.forEach(function (input) {
+	    input.onblur = function () {
 	      self.onblur(input)
 	    }
 	  })
@@ -179,21 +179,21 @@
 	  events.unbind(this.el, 'reset', this._reset)
 	}
 	
-	Validate.prototype.onblur = function(el) {
+	Validate.prototype.onblur = function (el) {
 	  var val = el.value
 	  var opt = this.opt
 	  var name = el.name
-	    // Not change do nothing
+	  // Not change do nothing
 	  if (this.values_map[name] === val) return
 	  this.values_map[name] = val
 	  var errEl = this.opt.search(el)
-	  if (!errEl) throw new Error('can\'t find error element')
+	  if (!errEl) throw new Error("can't find error element")
 	  var required = el.required
 	  var promise
 	  var results = this.emit('blur', name, val, required, el)
 	  var arr = this.emit('blur ' + name, val, el)
 	  if (!required && val === '') return this.clean(el)
-	  results = results.concat(arr).filter(function(str) {
+	  results = results.concat(arr).filter(function (str) {
 	    if (str.then) {
 	      promise = str
 	      return false
@@ -204,17 +204,17 @@
 	  if (!promise) return this.onsuccess(el)
 	  var self = this
 	  errEl.innerHTML = opt.processMsg
-	  promise.then(function(str) {
+	  promise.then(function (str) {
 	    if (str) return self.showErrmsg(str, el)
 	    self.onsuccess(el)
-	  }, function(e) {
+	  }, function (e) {
 	    classes(errEl).remove(opt.successClass)
 	    classes(errEl).add(opt.errorClass)
 	    errEl.innerHTML = e.message
 	  })
 	}
 	
-	Validate.prototype.onsuccess = function(el) {
+	Validate.prototype.onsuccess = function (el) {
 	  var opt = this.opt
 	  var errEl = this.opt.search(el)
 	  classes(errEl).remove(opt.errorClass)
@@ -232,27 +232,27 @@
 	 * @param {Element} el
 	 * @api public
 	 */
-	Validate.prototype.clean = function(el) {
-	    var opt = this.opt
-	    var errEl = this.opt.search(el)
-	    classes(el).remove('input-' + opt.successClass)
-	    classes(el).remove('input-' + opt.errorClass)
-	    classes(errEl).remove(opt.successClass)
-	    classes(errEl).remove(opt.errorClass)
-	    errEl.innerHTML = ''
-	  }
-	  /**
-	   * Check if all fields are valid
-	   *
-	   * @return {Boolean} valid
-	   * @api public
-	   */
-	Validate.prototype.isValid = function() {
+	Validate.prototype.clean = function (el) {
+	  var opt = this.opt
+	  var errEl = this.opt.search(el)
+	  classes(el).remove('input-' + opt.successClass)
+	  classes(el).remove('input-' + opt.errorClass)
+	  classes(errEl).remove(opt.successClass)
+	  classes(errEl).remove(opt.errorClass)
+	  errEl.innerHTML = ''
+	}
+	/**
+	 * Check if all fields are valid
+	 *
+	 * @return {Boolean} valid
+	 * @api public
+	 */
+	Validate.prototype.isValid = function () {
 	  var form = this.el
 	  var errEls = []
 	  var errorClass = this.opt.errorClass
 	  var search = this.opt.search
-	  this.inputs.forEach(function(input) {
+	  this.inputs.forEach(function (input) {
 	    if (invalid(input, form)) return
 	    input.onblur()
 	    var errEl = search(input)
@@ -260,8 +260,8 @@
 	    errEl.__target = input
 	  })
 	  var valid = true
-	    // errors might be hidden with invalid inputs
-	  errEls.forEach(function(el) {
+	  // errors might be hidden with invalid inputs
+	  errEls.forEach(function (el) {
 	    if (classes(el).has(errorClass)) {
 	      if (valid) el.__target.focus()
 	      valid = false
@@ -277,7 +277,7 @@
 	 * @param {Element} el error element
 	 * @api private
 	 */
-	Validate.prototype.showErrmsg = function(str, el) {
+	Validate.prototype.showErrmsg = function (str, el) {
 	  var opt = this.opt
 	  var errEl = opt.search(el)
 	  if (opt.successClass) {
@@ -290,26 +290,26 @@
 	}
 	
 	// hack emit function to return result
-	Validate.prototype.emit = function(event) {
+	Validate.prototype.emit = function (event) {
 	  var res = []
 	  var s
-	  this._callbacks = this._callbacks || {};
-	  var args = [].slice.call(arguments, 1),
-	    callbacks = this._callbacks['$' + event];
+	  this._callbacks = this._callbacks || {}
+	  var args = [].slice.call(arguments, 1)
+	  var callbacks = this._callbacks['$' + event]
 	
 	  if (callbacks) {
-	    callbacks = callbacks.slice(0);
+	    callbacks = callbacks.slice(0)
 	    for (var i = 0, len = callbacks.length; i < len; ++i) {
-	      s = callbacks[i].apply(this, args);
+	      s = callbacks[i].apply(this, args)
 	      // only cares about none null values
 	      if (s != null) res.push(s)
 	    }
 	  }
 	
-	  return res;
-	};
+	  return res
+	}
 	
-	Validate.setDefault = function(opt) {
+	Validate.setDefault = function (opt) {
 	  assign(defaultOpt, opt)
 	}
 	
@@ -321,7 +321,7 @@
 	 * @return target object
 	 * @api public
 	 */
-	function assign(o, obj) {
+	function assign (o, obj) {
 	  for (var k in obj) {
 	    o[k] = obj[k]
 	  }
@@ -334,7 +334,7 @@
 	 * @param {Array} inputs
 	 * @api public
 	 */
-	function filterInput(els) {
+	function filterInput (els) {
 	  var res = []
 	  var el
 	  for (var i = 0, len = els.length; i < len; i++) {
