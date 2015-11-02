@@ -161,20 +161,20 @@ describe('validate component', function () {
     assert.equal(input.className, 'input-success')
   })
 
-  it('should ignore hidden fileds when called isValid', function () {
+  it('should ignore disable fileds when called isValid', function () {
     form.appendChild(document.createElement('span'))
     var el = document.createElement('input')
     el.type = 'text'
     el.name = 'title'
     el.value = 'invalid'
-    el.style.display = 'none'
+    el.disabled = true
     form.appendChild(el)
     var validater = Validate(form)
     validater.on('blur title', function (val) {
       if (val === 'invalid') return 'invalid value'
     })
     assert.equal(validater.isValid(), true)
-    el.style.display = 'block'
+    el.disabled = false
     assert.equal(validater.isValid(), false)
   })
 
