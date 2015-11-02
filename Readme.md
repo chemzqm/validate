@@ -1,7 +1,7 @@
 # Validate
 
-[![Build Status](https://secure.travis-ci.org/chemzqm/validate.png)](http://travis-ci.org/chemzqm/validate)
 [![Dependency Status](https://david-dm.org/chemzqm/validate.png)](https://david-dm.org/chemzqm/validate)
+[![Build Status](https://secure.travis-ci.org/chemzqm/validate.png)](http://travis-ci.org/chemzqm/validate)
 
 Validate input elements in an easy way [demo](http://chemzqm.github.io/validate/)
 
