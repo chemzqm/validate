@@ -65,6 +65,7 @@ Validate.prototype.reset = function () {
   this.inputs.forEach(function (input) {
     this.clean(input)
   }, this)
+  this.values_map = {}
 }
 
 Validate.prototype.unbind = function () {
