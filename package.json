@@ -1,6 +1,6 @@
 {
   "name": "validate-component",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "validate input elements in an easy way",
   "main": "index.js",
   "scripts": {
