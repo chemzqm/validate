@@ -97,14 +97,30 @@ Validate.prototype.onblur = function (el) {
   if (!promise) return this.onsuccess(el)
   var self = this
   errEl.innerHTML = opt.processMsg
-  promise.then(function (str) {
+  return promise.then(function (str) {
     if (str) return self.showErrmsg(str, el)
     self.onsuccess(el)
   }, function (e) {
     classes(errEl).remove(opt.successClass)
     classes(errEl).add(opt.errorClass)
     errEl.innerHTML = e.message
+    return Promise.reject(e)
   })
+}
+
+Validate.prototype.isvalid = function (el) {
+  var res = this.onblur(el)
+  if (classes(el).has('input-' + this.opt.errorClass)) {
+    return Promise.resolve(false)
+  }
+  if (res && typeof res.then == 'function') {
+    return res.then(function () {
+      return Promise.resolve(true)
+    }, function () {
+      return Promise.resolve(false)
+    })
+  }
+  return Promise.resolve(true)
 }
 
 Validate.prototype.onsuccess = function (el) {

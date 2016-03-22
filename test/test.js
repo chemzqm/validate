@@ -242,4 +242,34 @@ describe('validate component', function () {
     var validater = Validate(form)
     assert.equal(validater.inputs.length, 1)
   })
+
+  it('should be invalid if input has error className', function () {
+    var validater = Validate(form)
+    form.reset()
+    validater.on('blur', function () {
+      return 'required'
+    })
+    return validater.isvalid(input).then(function (res) {
+      assert.equal(res, false)
+    })
+  })
+
+  it('should be valid if input has no error', function () {
+    var validater = Validate(form)
+    form.reset()
+    return validater.isvalid(input).then(function (res) {
+      assert.equal(res, true)
+    })
+  })
+
+  it('should not be valid if promise return error', function () {
+    var validater = Validate(form)
+    form.reset()
+    validater.on('blur', function () {
+      return Promise.reject('failed')
+    })
+    return validater.isvalid(input).then(function (res) {
+      assert.equal(res, false)
+    })
+  })
 })
